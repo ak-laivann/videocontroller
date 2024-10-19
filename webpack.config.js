@@ -2,11 +2,13 @@ const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
+const environment = process.env.NODE_ENV
+
 module.exports = {
   entry: {
     index: "./src/index.tsx",
   },
-  mode: "production",
+  mode: environment,
   module: {
     rules: [
       {
