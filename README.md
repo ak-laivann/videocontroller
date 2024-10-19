@@ -1,10 +1,10 @@
-# Youtube Ad Skipper
+# Video Controller
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## What this App is about?
 
-This repository can be used in chrome extensions to skip the unskippable ads. All I do is increase the playback rate of the video element tremendously, that it looks like it just got skipped. You guys can clone this repository and then use the dist folder in load unpacked section of google chrome extension to use it yourself.
+This repository can be used in chrome extensions to control all videos that come under video element.
 
 This is a project to enhance my portfolio.
 
