@@ -1,4 +1,4 @@
-## Road map for youtube ad skipper
+## Road map for video controller
 
 ### 1.0.0
 
