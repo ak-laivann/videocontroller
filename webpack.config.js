@@ -2,12 +2,14 @@ const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
-const environment = process.env.NODE_ENV
+const environment = process.env.NODE_ENV;
 
 module.exports = {
   entry: {
-    index: "./src/index.tsx",
+    popup: path.resolve("./src/popup.tsx"),
+    contentScript: path.resolve("./src/contentScript.js"),
   },
+  devtool: "cheap-module-source-map",
   mode: environment,
   module: {
     rules: [
@@ -32,26 +34,24 @@ module.exports = {
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: "manifest.json", to: "../manifest.json" }],
+      patterns: [
+        {
+          from: path.resolve("./manifest.json"),
+          to: path.resolve("dist"),
+        },
+      ],
     }),
-    ...getHtmlPlugins(["index"]),
+    new HTMLPlugin({
+      title: "HTML File",
+      filename: "popup.html",
+      chunks: ["popup"],
+    }),
   ],
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    path: path.join(__dirname, "dist/js"),
     filename: "[name].js",
+    path: path.resolve(__dirname, "dist"),
   },
 };
-
-function getHtmlPlugins(chunks) {
-  return chunks.map(
-    (chunk) =>
-      new HTMLPlugin({
-        title: "React extension",
-        filename: `${chunk}.html`,
-        chunks: [chunk],
-      })
-  );
-}
