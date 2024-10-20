@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
+// import "./App.css";
 import { Typography, Row, Col, message } from "antd";
 import {
   FullScreenElement,
@@ -14,32 +14,40 @@ function App() {
 
   // since the ref wont be updated on the first render, using useeffect to force rerender for the first time so that the ref will be updated with html video element and can be passed to the components
   useEffect(() => {
-    const videoElement = document.querySelector("video") as HTMLVideoElement;
-    if (videoElement) {
-      videoRef.current = videoElement;
-      videoRef.current.pause();
-    } else {
-      message.error("No video found");
-    }
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.type === "VIDEO_FOUND") {
+        message.success("Video found!");
+        const videoElement = document.querySelector(
+          "video"
+        ) as HTMLVideoElement;
+        if (videoElement) {
+          videoRef.current = videoElement;
+        }
+      } else if (request.type === "VIDEO_NOT_FOUND") {
+        message.error("No video found");
+      }
+    });
   }, []);
 
   return (
     <div
       className="App"
-      style={{
-        width: "300px",
-        height: "70vh",
-        position: "fixed",
-        // the below will be used for repositioning this as widget so that this may be used anywhere on the website.
-        // For reference, https://github.com/PaulleDemon/font-tester-chrome
-        top: "20px",
-        left: "70%",
-        right: "auto",
-        bottom: "auto",
-      }}
+      // style={
+      //   {
+      // width: "300px",
+      // height: "70vh",
+      // position: "fixed",
+      // the below will be used for repositioning this as widget so that this may be used anywhere on the website.
+      // For reference, https://github.com/PaulleDemon/font-tester-chrome
+      // top: "20px",
+      // left: "70%",
+      // right: "auto",
+      // bottom: "auto",
+      //   }
+      // }
     >
       {/* for testing purposes */}
-      <video
+      {/* <video
         ref={videoRef}
         width="100%"
         height="240px"
@@ -48,7 +56,7 @@ function App() {
         style={{ marginBottom: "20px" }}
       >
         Your browser does not support the video tag.
-      </video>
+      </video> */}
       <Typography.Title color="#01579b" italic={true} level={2}>
         Video Controller
       </Typography.Title>
