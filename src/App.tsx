@@ -1,41 +1,31 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
+import { Typography, Row, Col, message } from "antd";
 import {
-  Tag,
-  Typography,
-  Tooltip,
-  Flex,
-  Slider,
-  SliderSingleProps,
-  Row,
-  Col,
-} from "antd";
-import {
-  PauseCircleTwoTone,
-  PlayCircleTwoTone,
-  FullscreenOutlined,
-  PictureTwoTone,
-  DashboardTwoTone,
-} from "@ant-design/icons";
-
-const marks: SliderSingleProps["marks"] = {
-  0: "0x",
-  20: "1x",
-  40: "2x",
-  60: "3x",
-  80: "4x",
-  100: {
-    style: {
-      color: "#f50",
-    },
-    label: <strong>5x</strong>,
-  },
-};
+  FullScreenElement,
+  PausePlayElement,
+  PIPElement,
+  SpeedController,
+} from "./Functions";
 
 function App() {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [playbackRate, setPlaybackRate] = useState(1);
+
+  // since the ref wont be updated on the first render, using useeffect to force rerender for the first time so that the ref will be updated with html video element and can be passed to the components
+  useEffect(() => {
+    const videoElement = document.querySelector("video") as HTMLVideoElement;
+    if (videoElement) {
+      videoRef.current = videoElement;
+      videoRef.current.pause();
+    } else {
+      message.error("No video found");
+    }
+  }, []);
+
   return (
     <div
-      // className="App"
+      className="App"
       style={{
         width: "300px",
         height: "70vh",
@@ -48,60 +38,35 @@ function App() {
         bottom: "auto",
       }}
     >
+      {/* for testing purposes */}
+      <video
+        ref={videoRef}
+        width="100%"
+        height="240px"
+        controls
+        src="https://www.w3schools.com/html/mov_bbb.mp4" // Replace with your video URL
+        style={{ marginBottom: "20px" }}
+      >
+        Your browser does not support the video tag.
+      </video>
       <Typography.Title color="#01579b" italic={true} level={2}>
         Video Controller
       </Typography.Title>
       <Row gutter={[12, 48]}>
-        <Col span={6}>
-          <Tooltip title="Pause">
-            <Tag
-              icon={
-                <PauseCircleTwoTone
-                  style={{ fontSize: "30px", margin: "7px" }}
-                />
-              }
-            />
-          </Tooltip>
+        <Col span={8}>
+          <FullScreenElement videoRef={videoRef} />
         </Col>
-        <Col span={6}>
-          <Tooltip title="Play">
-            <Tag
-              icon={
-                <PlayCircleTwoTone
-                  style={{ fontSize: "30px", margin: "7px" }}
-                />
-              }
-            />
-          </Tooltip>
+        <Col span={8}>
+          <PIPElement videoRef={videoRef} />
         </Col>
-        <Col span={6}>
-          <Tooltip title="Full Screen">
-            <Tag
-              icon={
-                <FullscreenOutlined
-                  style={{ fontSize: "30px", margin: "7px" }}
-                />
-              }
-            />
-          </Tooltip>
-        </Col>
-        <Col span={6}>
-          <Tooltip title="PIP">
-            <Tag
-              icon={
-                <PictureTwoTone style={{ fontSize: "30px", margin: "7px" }} />
-              }
-            />
-          </Tooltip>
+        <Col span={8}>
+          <PausePlayElement videoRef={videoRef} speed={playbackRate} />
         </Col>
         <Col span={24}>
-          <Tag
-            children={<Typography.Paragraph strong>Speed</Typography.Paragraph>}
-            icon={
-              <DashboardTwoTone style={{ fontSize: "30px", margin: "7px" }} />
-            }
+          <SpeedController
+            videoRef={videoRef}
+            setPlaybackRate={setPlaybackRate}
           />
-          <Slider marks={marks} tooltip={{ open: false }} step={20} />
         </Col>
       </Row>
     </div>

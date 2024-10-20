@@ -11,5 +11,5 @@ const rootDiv = ReactDOM.createRoot(root);
 rootDiv.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
 );
